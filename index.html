@@ -502,37 +502,71 @@
                 </div>
                 <div class="col-lg-7 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <p class="mb-4">Thank you for visiting my portfolio! I am always excited to connect with fellow professionals, potential employers, and collaborators. Whether you have a project in mind, a question, or just want to say hello, feel free to reach out using the contact form below. I look forward to hearing from you and exploring how we can work together.</p>
-                    <form>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="name" placeholder="Your Name">
-                                    <label for="name">Your Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" placeholder="Your Email">
-                                    <label for="email">Your Email</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
-                                    <label for="subject">Subject</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Leave a message here" id="message" style="height: 100px"></textarea>
-                                    <label for="message">Message</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary py-3 px-5" type="submit">Send Message</button>
-                            </div>
-                        </div>
-                    </form>
+                   <form id="contact-form" action="https://formspree.io/f/{your_form_id}" method="post">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                <label for="name">Your Name</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
+                <label for="email">Your Email</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
+                <label for="subject">Subject</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a message here" id="message" name="message" style="height: 100px" required></textarea>
+                <label for="message">Message</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary py-3 px-5" type="submit">Send Message</button>
+        </div>
+    </div>
+    <div id="form-status"></div>
+</form>
+
+<script>
+document.getElementById('contact-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const data = new FormData(form);
+
+    fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            form.reset();
+            document.getElementById('form-status').innerHTML = '<p class="text-success">Thank you! Your message has been sent.</p>';
+        } else {
+            response.json().then(data => {
+                if (Object.hasOwn(data, 'errors')) {
+                    document.getElementById('form-status').innerHTML = '<p class="text-danger">' + data["errors"].map(error => error["message"]).join(", ") + '</p>';
+                } else {
+                    document.getElementById('form-status').innerHTML = '<p class="text-danger">Oops! There was a problem submitting your form</p>';
+                }
+            });
+        }
+    }).catch(error => {
+        document.getElementById('form-status').innerHTML = '<p class="text-danger">Oops! There was a problem submitting your form</p>';
+    });
+});
+</script>
+
                 </div>
             </div>
         </div>
